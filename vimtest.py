@@ -2,6 +2,8 @@ from pynput.keyboard import Listener, KeyCode, Key
 import os
 import sys
 import random
+import time
+
 
 counter = 0
 initial_coords = [1, 4]
@@ -41,12 +43,37 @@ intro = """
 
 """
 
+won = """
+
+        
+
+
+
+
+
+    YOU WON!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 def generate_map(x_dim=100, y_dim=30, char=' '):
     table = []
     empty_l = []
     for i in range(3):
         if i == 1:
-            table.append([' ',' ', '$:', ' ', str(money)])
+            table.append([' ',' ', '$:', ' ', str(money), '/10'])
         else:
              for _ in range(x_dim):
                   empty_l.append(' ')
@@ -67,11 +94,16 @@ def generate_map(x_dim=100, y_dim=30, char=' '):
         if index % 2 != 0 and index > 4 and index < 100:
             random_n = random.randint(2, x_dim - 5)
             random_n2 = random.randint(2, x_dim - 5)
+            random_n3 = random.randint(2, x_dim - 5)
             for char_i, char in enumerate(line):
-                if (char_i != random_n and char_i != random_n+1 and char_i != random_n+2 and char_i != random_n2 and char_i != random_n2+1 and char_i!=random_n2 +2):
+                if (char_i != random_n and char_i != random_n+1 and char_i != random_n+2 and char_i != random_n2 and char_i != random_n2+1 and char_i!=random_n2 +2 and char_i != random_n3 and char_i != random_n3-1 and char_i!=random_n3-2):
                     table[index][char_i] = '-'
     table[-1] = [' ' for _ in table[-1]]
     table[-2] = ['-' for _ in table[-2]]
+    for i, line in enumerate(table):
+        for char_i, char in enumerate(line):
+            if 4 < i < 9 and 0 < char_i < 20:
+                table[i][char_i] = ' '
     for i in range(10):
         empty_line = []
         for y in range(x_dim):
@@ -106,6 +138,15 @@ def print_key(*key):
     map[y_t][x_t] = '$'
     if initial_coords == target_coords and key[0] == KeyCode.from_char('x'):
         money += 1
+        if money >= 10:
+            os.system('clear')
+            os.system('cls')
+            print(won)
+            sys.stdout.flush()
+            time.sleep(3)
+            os.system('clear')
+            os.system('cls')
+            os._exit(0)
         map[1][4] = str(money)
         map[y_t][x_t] = ' '
         random_y = even_random_y()
